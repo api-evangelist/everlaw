@@ -1,0 +1,77 @@
+{
+  "provider": "everlaw",
+  "blog_url": "https://www.everlaw.com/blog/",
+  "last_fetched": "2026-06-13",
+  "posts": [
+    {
+      "title": "Harlan Hillier DiGiacco LLP Transforms Case Management and Unlocks Key Metadata Insights with Everlaw",
+      "url": "https://www.everlaw.com/blog/case-studies/harlan-hillier-digiacco-transforms-case-management/",
+      "date": "2026-06-11",
+      "category": "case-studies",
+      "description": "A case study showcasing how this law firm improved case management efficiency and gained deeper insights into case data using Everlaw's platform."
+    },
+    {
+      "title": "The New Legal Skill Set",
+      "url": "https://www.everlaw.com/blog/ai-and-law/judge-maritza-dominguez-braswell-on-ai-guidance/",
+      "date": null,
+      "category": "ai-and-law",
+      "description": "Judge Maritza Dominguez Braswell discusses the competencies young attorneys should develop in an AI-augmented legal environment."
+    },
+    {
+      "title": "Am Law 200 Firm Sets a New Standard for AI Performance in High-Stakes Insurance Litigation",
+      "url": "https://www.everlaw.com/blog/case-studies/am-law-200-firm-sets-a-new-standard-for-ai-performance/",
+      "date": null,
+      "category": "case-studies",
+      "description": "Firm demonstrated exceptional results using Coding Suggestions tool to review nearly 600,000 documents in insurance litigation matters."
+    },
+    {
+      "title": "From Proof of Concept to Platform Strategy: Inside Consilio and Everlaw's 10-Year Partnership",
+      "url": "https://www.everlaw.com/blog/partner/consilio-everlaw-partnership/",
+      "date": null,
+      "category": "partner",
+      "description": "An examination of a decade-long partnership demonstrating how strategic collaboration between service providers and platforms drives client success."
+    },
+    {
+      "title": "What Makes AI Defensible in Ediscovery?",
+      "url": "https://www.everlaw.com/blog/ai-and-law/what-makes-ai-defensible-in-ediscovery/",
+      "date": null,
+      "category": "ai-and-law",
+      "description": "Exploration of standards and practices that make AI-assisted discovery workflows defensible in litigation contexts."
+    },
+    {
+      "title": "Coalfire's In-House Legal Takes Control With a Modern Discovery Solution",
+      "url": "https://www.everlaw.com/blog/case-studies/coalfires-in-house-legal-takes-control-with-a-modern-discovery-solution/",
+      "date": null,
+      "category": "case-studies",
+      "description": "A corporate legal team gains greater command over discovery timelines and data management through technology adoption."
+    },
+    {
+      "title": "How Everlaw for Good Empowers Reporters to Mine Big Data for Stories",
+      "url": "https://www.everlaw.com/blog/everlaw-for-good/everlaw-for-good-reporters-big-data/",
+      "date": null,
+      "category": "everlaw-for-good",
+      "description": "Journalist Burt Helm discusses leveraging Everlaw's platform to analyze substantial datasets for investigative reporting."
+    },
+    {
+      "title": "Everlaw Prime Accelerates Public Records and FOIA Requests",
+      "url": "https://www.everlaw.com/blog/federal-government/introducing-everlaw-prime/",
+      "date": null,
+      "category": "federal-government",
+      "description": "Introduction of Everlaw's specialized solution designed to streamline public records request workflows."
+    },
+    {
+      "title": "Why Agentic Integrations Are a Home Run for Lawyers",
+      "url": "https://www.everlaw.com/blog/ai-and-law/why-agentic-integrations-are-a-home-run-for-lawyers/",
+      "date": null,
+      "category": "ai-and-law",
+      "description": "Everlaw's CTO discusses how autonomous AI integrations enhance legal workflows and decision-making processes."
+    },
+    {
+      "title": "Introducing Everlaw's Anthropic MCP Integration",
+      "url": "https://www.everlaw.com/blog/ai-and-advanced-analytics/anthropic-mcp-integration/",
+      "date": null,
+      "category": "ai-and-advanced-analytics",
+      "description": "Announcement of a new integration enabling Claude to access Everlaw data, expanding AI capabilities for legal professionals."
+    }
+  ]
+}
