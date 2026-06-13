@@ -1,0 +1,44 @@
+name: Everlaw FinOps
+description: Financial operations guidance for managing Everlaw API and platform costs. Everlaw uses a transparent per-GB monthly pricing model with no hidden fees, making cost forecasting straightforward. The primary cost driver is data volume hosted in the platform.
+url: https://www.everlaw.com/blog/ediscovery-best-practices/ediscovery-costs-in-2026/
+cost_model:
+  type: per-gb-monthly
+  description: Costs are driven entirely by the volume of data (in gigabytes) hosted in Everlaw each month. There are no per-user fees, processing fees, or module fees.
+  primary_cost_drivers:
+    - name: Hosted Data Volume
+      unit: GB per month
+      estimated_range: "$18-35 per GB per month (third-party estimates; actual rates require a custom quote)"
+      notes: Volume discounts available at 500GB+; organizations at 2TB+ can negotiate custom rates.
+    - name: Base Platform Fee
+      unit: per month
+      estimated_range: "$2,000-5,000 per month (third-party estimates; actual rates require a custom quote)"
+      notes: Includes all features, unlimited users, and support. No additional module or seat fees.
+included_at_no_extra_cost:
+  - Setup and onboarding
+  - Processing and ingestion
+  - Unlimited reviewer seats
+  - Training and certification
+  - Technical support
+  - Data export and productions
+  - Predictive coding
+  - Printing
+  - All new feature releases (including AI features)
+  - EverlawAI Assistant (Writing Assistant, Deposition Analyzer, Single Document Review Assistant)
+cost_optimization:
+  - strategy: Data Volume Management
+    description: Reduce hosted data by culling, deduplication, and early case assessment before uploading to Everlaw. The primary lever for cost reduction is minimizing the amount of data stored in the platform.
+  - strategy: Volume Commitment Discounts
+    description: Commit to higher data volumes (500GB+, 2TB+) in advance to unlock volume discount tiers and negotiate lower per-GB rates.
+  - strategy: No Long-Term Contracts
+    description: Everlaw offers monthly flexibility with no long-term lock-in, allowing customers to scale down data volume when cases close.
+  - strategy: Use Free AI Features
+    description: EverlawAI Assistant features (Writing Assistant, Deposition Analyzer, Single Document Review Assistant) are included at no extra charge, reducing need for third-party AI tools.
+billing_transparency:
+  predictable: true
+  no_hidden_fees: true
+  notes: Everlaw is known in the market for its all-inclusive per-GB model, which contrasts with competitors that charge separately for processing, users, modules, and exports.
+api_cost_notes:
+  description: API access is included with an Everlaw subscription at no additional charge. API keys are managed by Organization Admins and do not incur separate licensing fees. Usage-based API costs beyond the subscription are not documented publicly.
+  api_key_access: included-with-subscription
+status_page: https://status.everlaw.com
+pricing_contact: https://www.everlaw.com/request-demo/

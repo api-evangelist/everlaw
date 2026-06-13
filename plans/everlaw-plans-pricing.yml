@@ -1,0 +1,33 @@
+name: Everlaw Plans and Pricing
+description: Everlaw uses a simple monthly per-gigabyte pricing model for its cloud-based eDiscovery platform. Pricing is not publicly listed and requires a custom quote, but the model is all-inclusive with no setup, processing, user, training, exporting, predictive coding, production, or printing fees. Volume discounts apply for larger data commitments.
+url: https://www.everlaw.com/blog/ediscovery-software/how-everlaws-pricing-is-different/
+plans:
+  - name: Standard
+    description: Core eDiscovery functionality including document review, search, predictive coding, and production features. Includes unlimited reviewer seats, standard support, and all platform updates automatically at no extra charge.
+    pricing_model: per-gb-monthly
+    rate: contact-for-pricing
+    notes: Estimated $18-35 per GB per month based on third-party reports; $2,000-5,000/month base. Actual pricing requires a custom quote.
+    features:
+      - Document review with coding panels
+      - Search and analytics
+      - Predictive coding and AI-assisted review
+      - Storybuilder for visual document connections
+      - Productions in standard formats
+      - Unlimited reviewer seats
+      - Standard technical support
+      - All new feature releases included
+  - name: Enterprise
+    description: For organizations with large data volumes (500GB+). Includes volume discounts and dedicated support. Organizations committing to 2TB+ may negotiate below the standard per-GB rate.
+    pricing_model: per-gb-monthly-volume-discount
+    rate: contact-for-pricing
+    notes: Volume discounts begin at 500GB. Organizations at 2TB+ can negotiate custom rates.
+    features:
+      - All Standard features
+      - Volume-based per-GB discount
+      - Dedicated support and success management
+      - Custom onboarding
+      - AI features including EverlawAI Assistant (Writing Assistant, Deposition Analyzer, Single Document Review Assistant)
+free_trial: false
+free_tier: false
+contact_for_pricing: true
+pricing_page: https://www.everlaw.com/blog/ediscovery-software/how-everlaws-pricing-is-different/

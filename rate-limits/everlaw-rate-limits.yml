@@ -1,0 +1,36 @@
+name: Everlaw API Rate Limits
+description: Everlaw enforces a fixed rate limit per authenticating user account to ensure platform stability. Requests that exceed the limit receive a 429 Too Many Requests HTTP status code. A stricter rate limit is enforced for failed authentication attempts (invalid or missing API tokens).
+url: https://api.everlaw.com/docs/
+limits:
+  - name: Standard Request Rate Limit
+    scope: per-user-account
+    limit: 25
+    period: per-second
+    description: A fixed rate limit of 25 requests per second is enforced per authenticating user account. This applies to all standard API endpoints.
+    http_status_on_exceeded: 429
+    notes: This limit applies to any account used for authentication via API key.
+  - name: Failed Authentication Rate Limit
+    scope: per-user-account
+    limit: stricter-than-standard
+    period: per-second
+    description: A stricter rate limit is enforced for failed authentication attempts involving invalid or missing API tokens. Exact threshold not publicly documented.
+    http_status_on_exceeded: 429
+    notes: Designed to prevent brute-force attacks on API keys.
+error_handling:
+  - status_code: 429
+    description: Too Many Requests — the rate limit has been exceeded.
+    recommended_action: Implement exponential backoff with increasing delays between successive retries to reduce request rates when 429 responses are received.
+retry_strategy:
+  type: exponential-backoff
+  description: Watch for 429 status codes and employ a retry mechanism that follows an exponential backoff schedule with increasing delays between successive retries.
+regions:
+  - name: United States
+    base_url: https://api.everlaw.com
+  - name: United Kingdom
+    base_url: https://api.everlaw.co.uk
+  - name: European Union
+    base_url: contact-support-for-regional-endpoint
+  - name: Canada
+    base_url: contact-support-for-regional-endpoint
+  - name: Australia
+    base_url: contact-support-for-regional-endpoint
