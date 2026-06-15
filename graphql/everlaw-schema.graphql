@@ -1,0 +1,939 @@
+"""
+Everlaw GraphQL Schema
+Conceptual schema derived from the Everlaw REST API.
+Covers case management, document upload and processing, review workflows,
+coding, predictive review, deposition management, and case analytics.
+"""
+
+# ─────────────────────────────────────────────
+# Scalars
+# ─────────────────────────────────────────────
+
+scalar DateTime
+scalar JSON
+scalar Upload
+scalar Long
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
+
+enum DocumentStatus {
+  PENDING
+  PROCESSING
+  PROCESSED
+  FAILED
+  DELETED
+}
+
+enum ReviewStatus {
+  UNREVIEWED
+  IN_REVIEW
+  REVIEWED
+  FLAGGED
+  WITHHELD
+}
+
+enum PrivilegeType {
+  ATTORNEY_CLIENT
+  WORK_PRODUCT
+  COMMON_INTEREST
+  CLAWBACK
+  NONE
+}
+
+enum CodingDecision {
+  RESPONSIVE
+  NON_RESPONSIVE
+  PRIVILEGED
+  NEEDS_FURTHER_REVIEW
+  HOT
+  NOT_HOT
+}
+
+enum PredictiveReviewStatus {
+  NOT_STARTED
+  TRAINING
+  ACTIVE
+  PAUSED
+  COMPLETE
+}
+
+enum UploadStatus {
+  QUEUED
+  UPLOADING
+  PROCESSING
+  COMPLETE
+  FAILED
+}
+
+enum TaskStatus {
+  PENDING
+  RUNNING
+  COMPLETE
+  FAILED
+  CANCELLED
+}
+
+enum ExportFormat {
+  NATIVE
+  PDF
+  TIFF
+  CSV
+  LOAD_FILE
+}
+
+enum UserRole {
+  ORGANIZATION_ADMIN
+  CASE_ADMIN
+  CASE_MANAGER
+  REVIEWER
+  VIEWER
+}
+
+enum RegionCode {
+  US
+  UK
+  EU
+  CA
+  AU
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+enum SearchOperator {
+  AND
+  OR
+  NOT
+}
+
+enum DepositionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETE
+  CANCELLED
+}
+
+enum ProductionStatus {
+  DRAFT
+  PENDING
+  PROCESSING
+  COMPLETE
+  FAILED
+}
+
+enum StampPosition {
+  TOP_LEFT
+  TOP_CENTER
+  TOP_RIGHT
+  BOTTOM_LEFT
+  BOTTOM_CENTER
+  BOTTOM_RIGHT
+}
+
+# ─────────────────────────────────────────────
+# Core domain types
+# ─────────────────────────────────────────────
+
+type Organization {
+  id: ID!
+  name: String!
+  region: RegionCode!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  cases: [Case!]!
+  users: [User!]!
+  apiKeys: [ApiKey!]!
+  rateLimitPerSecond: Int!
+  storageUsedBytes: Long!
+  storageQuotaBytes: Long!
+}
+
+type Case {
+  id: ID!
+  name: String!
+  description: String
+  organization: Organization!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  documents: DocumentConnection!
+  reviewBatches: [ReviewBatch!]!
+  codingFields: [CodingField!]!
+  tags: [Tag!]!
+  productions: [Production!]!
+  depositions: [Deposition!]!
+  predictiveReviewProjects: [PredictiveReviewProject!]!
+  analytics: CaseAnalytics!
+  users: [CaseUser!]!
+  uploads: [Upload_!]!
+  savedSearches: [SavedSearch!]!
+  holdNotices: [HoldNotice!]!
+  status: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: UserRole!
+  organization: Organization!
+  createdAt: DateTime!
+  lastLoginAt: DateTime
+  caseAccess: [CaseUser!]!
+  active: Boolean!
+}
+
+type CaseUser {
+  user: User!
+  case: Case!
+  role: UserRole!
+  assignedAt: DateTime!
+  reviewBatches: [ReviewBatch!]!
+}
+
+type ApiKey {
+  id: ID!
+  name: String!
+  keyPrefix: String!
+  organization: Organization!
+  createdBy: User!
+  createdAt: DateTime!
+  lastUsedAt: DateTime
+  active: Boolean!
+}
+
+# ─────────────────────────────────────────────
+# Document types
+# ─────────────────────────────────────────────
+
+type Document {
+  id: ID!
+  batesNumber: String
+  fileName: String!
+  fileExtension: String!
+  fileSizeBytes: Long!
+  mimeType: String!
+  status: DocumentStatus!
+  case: Case!
+  custodian: Custodian
+  uploadBatch: Upload_
+  dateCreated: DateTime
+  dateModified: DateTime
+  dateReceived: DateTime
+  processingDate: DateTime!
+  pageCount: Int
+  wordCount: Int
+  hasAttachments: Boolean!
+  parentDocument: Document
+  attachments: [Document!]!
+  emailMetadata: EmailMetadata
+  reviewStatus: ReviewStatus!
+  privilegeType: PrivilegeType!
+  coding: DocumentCoding
+  tags: [Tag!]!
+  families: [DocumentFamily!]!
+  highlights: [Highlight!]!
+  annotations: [Annotation!]!
+  text: String
+  nativeFileUrl: String
+  pdfUrl: String
+}
+
+type DocumentConnection {
+  edges: [DocumentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type DocumentEdge {
+  node: Document!
+  cursor: String!
+}
+
+type EmailMetadata {
+  from: String
+  to: [String!]!
+  cc: [String!]!
+  bcc: [String!]!
+  subject: String
+  messageid: String
+  conversationThread: [Document!]!
+}
+
+type DocumentFamily {
+  id: ID!
+  parentDocument: Document!
+  members: [Document!]!
+  familySize: Int!
+}
+
+type DocumentCoding {
+  document: Document!
+  reviewer: User
+  decision: CodingDecision
+  customFields: [CodingFieldValue!]!
+  completedAt: DateTime
+  updatedAt: DateTime!
+}
+
+type CodingFieldValue {
+  field: CodingField!
+  value: JSON
+}
+
+type Custodian {
+  id: ID!
+  name: String!
+  email: String
+  case: Case!
+  documents: DocumentConnection!
+  documentCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Upload types
+# ─────────────────────────────────────────────
+
+type Upload_ {
+  id: ID!
+  name: String!
+  case: Case!
+  uploadedBy: User!
+  status: UploadStatus!
+  createdAt: DateTime!
+  completedAt: DateTime
+  documentCount: Int!
+  fileSizeTotalBytes: Long!
+  errors: [UploadError!]!
+  processingTask: Task
+}
+
+type UploadError {
+  fileName: String!
+  errorMessage: String!
+  errorCode: String!
+  occurredAt: DateTime!
+}
+
+type Task {
+  id: ID!
+  type: String!
+  status: TaskStatus!
+  progress: Float
+  createdAt: DateTime!
+  startedAt: DateTime
+  completedAt: DateTime
+  errorMessage: String
+  metadata: JSON
+}
+
+# ─────────────────────────────────────────────
+# Review types
+# ─────────────────────────────────────────────
+
+type ReviewBatch {
+  id: ID!
+  name: String!
+  case: Case!
+  assignedTo: User
+  documents: DocumentConnection!
+  documentCount: Int!
+  reviewedCount: Int!
+  createdAt: DateTime!
+  dueDate: DateTime
+  completedAt: DateTime
+  priority: Int!
+  instructions: String
+}
+
+type Highlight {
+  id: ID!
+  document: Document!
+  createdBy: User!
+  text: String!
+  pageNumber: Int!
+  color: String!
+  createdAt: DateTime!
+  note: String
+}
+
+type Annotation {
+  id: ID!
+  document: Document!
+  createdBy: User!
+  type: String!
+  pageNumber: Int!
+  content: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Tag {
+  id: ID!
+  name: String!
+  color: String
+  case: Case!
+  createdBy: User!
+  createdAt: DateTime!
+  documentCount: Int!
+}
+
+# ─────────────────────────────────────────────
+# Coding / Fields
+# ─────────────────────────────────────────────
+
+type CodingField {
+  id: ID!
+  name: String!
+  fieldType: String!
+  case: Case!
+  options: [CodingFieldOption!]!
+  required: Boolean!
+  defaultValue: JSON
+  createdAt: DateTime!
+}
+
+type CodingFieldOption {
+  id: ID!
+  label: String!
+  value: String!
+  field: CodingField!
+}
+
+# ─────────────────────────────────────────────
+# Predictive review
+# ─────────────────────────────────────────────
+
+type PredictiveReviewProject {
+  id: ID!
+  name: String!
+  case: Case!
+  status: PredictiveReviewStatus!
+  trainingRounds: [TrainingRound!]!
+  currentAccuracy: Float
+  documentsScored: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: User!
+  positiveExampleCount: Int!
+  negativeExampleCount: Int!
+}
+
+type TrainingRound {
+  id: ID!
+  project: PredictiveReviewProject!
+  roundNumber: Int!
+  accuracy: Float!
+  precision: Float!
+  recall: Float!
+  f1Score: Float!
+  trainingDocumentCount: Int!
+  completedAt: DateTime!
+}
+
+type PredictiveScore {
+  document: Document!
+  project: PredictiveReviewProject!
+  score: Float!
+  scoredAt: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# Productions
+# ─────────────────────────────────────────────
+
+type Production {
+  id: ID!
+  name: String!
+  case: Case!
+  status: ProductionStatus!
+  format: ExportFormat!
+  documents: DocumentConnection!
+  documentCount: Int!
+  createdBy: User!
+  createdAt: DateTime!
+  completedAt: DateTime
+  downloadUrl: String
+  batesPrefix: String
+  batesStartNumber: Int
+  stampConfiguration: StampConfiguration
+  redactions: [Redaction!]!
+  task: Task
+}
+
+type StampConfiguration {
+  position: StampPosition!
+  prefix: String!
+  includePageNumber: Boolean!
+  fontSize: Int!
+  fontFamily: String!
+}
+
+type Redaction {
+  id: ID!
+  document: Document!
+  pageNumber: Int!
+  reason: String
+  appliedBy: User!
+  appliedAt: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# Depositions
+# ─────────────────────────────────────────────
+
+type Deposition {
+  id: ID!
+  witnessName: String!
+  case: Case!
+  status: DepositionStatus!
+  scheduledAt: DateTime
+  location: String
+  transcript: DepositionTranscript
+  exhibits: [DepositionExhibit!]!
+  createdBy: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  notes: String
+}
+
+type DepositionTranscript {
+  id: ID!
+  deposition: Deposition!
+  uploadedAt: DateTime!
+  pageCount: Int!
+  downloadUrl: String
+  annotations: [Annotation!]!
+}
+
+type DepositionExhibit {
+  id: ID!
+  deposition: Deposition!
+  document: Document!
+  exhibitNumber: String!
+  markedAt: DateTime
+}
+
+# ─────────────────────────────────────────────
+# Search types
+# ─────────────────────────────────────────────
+
+type SavedSearch {
+  id: ID!
+  name: String!
+  case: Case!
+  createdBy: User!
+  createdAt: DateTime!
+  query: SearchQuery!
+  documentCount: Int
+  lastRunAt: DateTime
+}
+
+type SearchQuery {
+  terms: [SearchTerm!]!
+  operator: SearchOperator!
+  dateRange: DateRange
+  custodians: [ID!]!
+  reviewStatuses: [ReviewStatus!]!
+  tags: [ID!]!
+}
+
+type SearchTerm {
+  field: String
+  value: String!
+  fuzzy: Boolean!
+}
+
+type DateRange {
+  from: DateTime
+  to: DateTime
+}
+
+type SearchResult {
+  documents: DocumentConnection!
+  totalCount: Int!
+  queryTimeMs: Int!
+  aggregations: SearchAggregations!
+}
+
+type SearchAggregations {
+  byReviewStatus: [StatusCount!]!
+  byCustodian: [CustodianCount!]!
+  byTag: [TagCount!]!
+  byDateRange: [DateBucket!]!
+}
+
+type StatusCount {
+  status: ReviewStatus!
+  count: Int!
+}
+
+type CustodianCount {
+  custodian: Custodian!
+  count: Int!
+}
+
+type TagCount {
+  tag: Tag!
+  count: Int!
+}
+
+type DateBucket {
+  label: String!
+  from: DateTime!
+  to: DateTime!
+  count: Int!
+}
+
+# ─────────────────────────────────────────────
+# Analytics
+# ─────────────────────────────────────────────
+
+type CaseAnalytics {
+  case: Case!
+  totalDocuments: Int!
+  reviewedDocuments: Int!
+  reviewCompletionRate: Float!
+  privilegedDocuments: Int!
+  responsiveDocuments: Int!
+  documentsPerDay: [DailyCount!]!
+  reviewerProductivity: [ReviewerProductivity!]!
+  costSummary: CostSummary!
+  storageUsedBytes: Long!
+  updatedAt: DateTime!
+}
+
+type DailyCount {
+  date: DateTime!
+  count: Int!
+}
+
+type ReviewerProductivity {
+  user: User!
+  documentsReviewedCount: Int!
+  averageReviewTimeSeconds: Float!
+  period: DateRange!
+}
+
+type CostSummary {
+  storageChargesUsd: Float!
+  processingChargesUsd: Float!
+  reviewChargesUsd: Float!
+  totalChargesUsd: Float!
+  period: DateRange!
+}
+
+# ─────────────────────────────────────────────
+# Hold notices
+# ─────────────────────────────────────────────
+
+type HoldNotice {
+  id: ID!
+  title: String!
+  case: Case!
+  createdBy: User!
+  createdAt: DateTime!
+  issuedAt: DateTime
+  custodians: [Custodian!]!
+  content: String!
+  acknowledged: [HoldAcknowledgement!]!
+  status: String!
+}
+
+type HoldAcknowledgement {
+  custodian: Custodian!
+  acknowledgedAt: DateTime!
+}
+
+# ─────────────────────────────────────────────
+# Pagination
+# ─────────────────────────────────────────────
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+# ─────────────────────────────────────────────
+# Input types
+# ─────────────────────────────────────────────
+
+input DocumentFilterInput {
+  reviewStatuses: [ReviewStatus!]
+  custodianIds: [ID!]
+  tagIds: [ID!]
+  uploadBatchIds: [ID!]
+  dateRange: DateRangeInput
+  hasAttachments: Boolean
+  pageCountMin: Int
+  pageCountMax: Int
+}
+
+input DateRangeInput {
+  from: DateTime
+  to: DateTime
+}
+
+input SearchInput {
+  terms: [SearchTermInput!]!
+  operator: SearchOperator
+  dateRange: DateRangeInput
+  custodianIds: [ID!]
+  reviewStatuses: [ReviewStatus!]
+  tagIds: [ID!]
+}
+
+input SearchTermInput {
+  field: String
+  value: String!
+  fuzzy: Boolean
+}
+
+input CreateCaseInput {
+  name: String!
+  description: String
+  organizationId: ID!
+}
+
+input UpdateCaseInput {
+  name: String
+  description: String
+}
+
+input CreateCustodianInput {
+  name: String!
+  email: String
+  caseId: ID!
+}
+
+input CreateTagInput {
+  name: String!
+  color: String
+  caseId: ID!
+}
+
+input CreateReviewBatchInput {
+  name: String!
+  caseId: ID!
+  assignedToUserId: ID
+  documentIds: [ID!]!
+  dueDate: DateTime
+  priority: Int
+  instructions: String
+}
+
+input UpdateDocumentCodingInput {
+  documentId: ID!
+  decision: CodingDecision
+  customFields: [CodingFieldValueInput!]
+}
+
+input CodingFieldValueInput {
+  fieldId: ID!
+  value: JSON!
+}
+
+input CreateProductionInput {
+  name: String!
+  caseId: ID!
+  format: ExportFormat!
+  documentIds: [ID!]
+  savedSearchId: ID
+  batesPrefix: String
+  batesStartNumber: Int
+  stampConfiguration: StampConfigurationInput
+}
+
+input StampConfigurationInput {
+  position: StampPosition!
+  prefix: String!
+  includePageNumber: Boolean!
+  fontSize: Int
+  fontFamily: String
+}
+
+input CreateDepositionInput {
+  witnessName: String!
+  caseId: ID!
+  scheduledAt: DateTime
+  location: String
+  notes: String
+}
+
+input CreateHoldNoticeInput {
+  title: String!
+  caseId: ID!
+  content: String!
+  custodianIds: [ID!]!
+}
+
+input CreateSavedSearchInput {
+  name: String!
+  caseId: ID!
+  query: SearchInput!
+}
+
+input PaginationInput {
+  first: Int
+  after: String
+  last: Int
+  before: String
+}
+
+input DocumentSortInput {
+  field: String!
+  direction: SortDirection!
+}
+
+# ─────────────────────────────────────────────
+# Query, Mutation, Subscription
+# ─────────────────────────────────────────────
+
+type Query {
+  # Organization
+  organization(id: ID!): Organization
+  myOrganization: Organization
+
+  # Cases
+  case(id: ID!): Case
+  cases(organizationId: ID!, pagination: PaginationInput): [Case!]!
+
+  # Documents
+  document(id: ID!): Document
+  documents(
+    caseId: ID!
+    filter: DocumentFilterInput
+    sort: DocumentSortInput
+    pagination: PaginationInput
+  ): DocumentConnection!
+
+  # Search
+  search(caseId: ID!, query: SearchInput!, pagination: PaginationInput): SearchResult!
+  savedSearch(id: ID!): SavedSearch
+  savedSearches(caseId: ID!): [SavedSearch!]!
+
+  # Review
+  reviewBatch(id: ID!): ReviewBatch
+  reviewBatches(caseId: ID!): [ReviewBatch!]!
+
+  # Predictive review
+  predictiveReviewProject(id: ID!): PredictiveReviewProject
+  predictiveReviewProjects(caseId: ID!): [PredictiveReviewProject!]!
+  documentPredictiveScore(documentId: ID!, projectId: ID!): PredictiveScore
+
+  # Productions
+  production(id: ID!): Production
+  productions(caseId: ID!): [Production!]!
+
+  # Depositions
+  deposition(id: ID!): Deposition
+  depositions(caseId: ID!): [Deposition!]!
+
+  # Custodians
+  custodian(id: ID!): Custodian
+  custodians(caseId: ID!): [Custodian!]!
+
+  # Tags
+  tag(id: ID!): Tag
+  tags(caseId: ID!): [Tag!]!
+
+  # Analytics
+  caseAnalytics(caseId: ID!, period: DateRangeInput): CaseAnalytics!
+
+  # Users
+  user(id: ID!): User
+  users(organizationId: ID!): [User!]!
+  me: User!
+
+  # Uploads
+  upload(id: ID!): Upload_
+  uploads(caseId: ID!): [Upload_!]!
+
+  # Tasks
+  task(id: ID!): Task
+
+  # Hold notices
+  holdNotice(id: ID!): HoldNotice
+  holdNotices(caseId: ID!): [HoldNotice!]!
+
+  # Coding fields
+  codingField(id: ID!): CodingField
+  codingFields(caseId: ID!): [CodingField!]!
+}
+
+type Mutation {
+  # Cases
+  createCase(input: CreateCaseInput!): Case!
+  updateCase(id: ID!, input: UpdateCaseInput!): Case!
+  deleteCase(id: ID!): Boolean!
+
+  # Documents
+  updateDocumentCoding(input: UpdateDocumentCodingInput!): DocumentCoding!
+  addTagToDocument(documentId: ID!, tagId: ID!): Document!
+  removeTagFromDocument(documentId: ID!, tagId: ID!): Document!
+  updateDocumentReviewStatus(documentId: ID!, status: ReviewStatus!): Document!
+  setDocumentPrivilege(documentId: ID!, privilegeType: PrivilegeType!): Document!
+
+  # Annotations and highlights
+  createHighlight(documentId: ID!, text: String!, pageNumber: Int!, color: String!, note: String): Highlight!
+  deleteHighlight(id: ID!): Boolean!
+  createAnnotation(documentId: ID!, type: String!, pageNumber: Int!, content: String): Annotation!
+  deleteAnnotation(id: ID!): Boolean!
+
+  # Tags
+  createTag(input: CreateTagInput!): Tag!
+  deleteTag(id: ID!): Boolean!
+
+  # Review batches
+  createReviewBatch(input: CreateReviewBatchInput!): ReviewBatch!
+  assignReviewBatch(batchId: ID!, userId: ID!): ReviewBatch!
+  updateReviewBatchPriority(batchId: ID!, priority: Int!): ReviewBatch!
+
+  # Custodians
+  createCustodian(input: CreateCustodianInput!): Custodian!
+  updateCustodian(id: ID!, name: String, email: String): Custodian!
+  deleteCustodian(id: ID!): Boolean!
+
+  # Predictive review
+  startPredictiveReviewTraining(projectId: ID!): PredictiveReviewProject!
+  pausePredictiveReview(projectId: ID!): PredictiveReviewProject!
+  addTrainingExample(projectId: ID!, documentId: ID!, label: Boolean!): PredictiveReviewProject!
+
+  # Productions
+  createProduction(input: CreateProductionInput!): Production!
+  startProduction(id: ID!): Production!
+  deleteProduction(id: ID!): Boolean!
+
+  # Depositions
+  createDeposition(input: CreateDepositionInput!): Deposition!
+  updateDepositionStatus(id: ID!, status: DepositionStatus!): Deposition!
+  addExhibitToDeposition(depositionId: ID!, documentId: ID!, exhibitNumber: String!): DepositionExhibit!
+
+  # Hold notices
+  createHoldNotice(input: CreateHoldNoticeInput!): HoldNotice!
+  issueHoldNotice(id: ID!): HoldNotice!
+  acknowledgeHoldNotice(id: ID!, custodianId: ID!): HoldAcknowledgement!
+
+  # Saved searches
+  createSavedSearch(input: CreateSavedSearchInput!): SavedSearch!
+  deleteSavedSearch(id: ID!): Boolean!
+
+  # API keys
+  createApiKey(name: String!, organizationId: ID!): ApiKey!
+  revokeApiKey(id: ID!): Boolean!
+}
+
+type Subscription {
+  documentProcessed(caseId: ID!): Document!
+  uploadStatusChanged(uploadId: ID!): Upload_!
+  productionStatusChanged(productionId: ID!): Production!
+  reviewBatchUpdated(batchId: ID!): ReviewBatch!
+  taskStatusChanged(taskId: ID!): Task!
+  predictiveReviewTrainingComplete(projectId: ID!): PredictiveReviewProject!
+}
