@@ -63,6 +63,12 @@ apis:
     url: https://support.everlaw.com/hc/en-us
     email: support@everlaw.com
 common:
+- type: TrustCenter
+  url: security/everlaw-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/everlaw-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/everlaw-domain-security.yml
 - type: Plans
   url: https://raw.githubusercontent.com/api-evangelist/everlaw/refs/heads/main/plans/everlaw-plans-pricing.yml
 - type: RateLimits
