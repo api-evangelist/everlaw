@@ -2,11 +2,18 @@
   "repo": "everlaw",
   "feeds": [
     {
-      "source": "https://www.everlaw.com/blog/",
+      "source": "https://www.everlaw.com/feed/feed.xml",
       "feed_url": "https://www.everlaw.com/feed/feed.xml",
       "title": "",
-      "saved": 57,
-      "method": "discovered"
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://status.everlaw.com/history.atom",
+      "feed_url": "https://status.everlaw.com/history.atom",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
     },
     {
       "source": "https://status.everlaw.com",
@@ -16,6 +23,6 @@
       "method": "discovered"
     }
   ],
-  "fetched": "2026-06-27T12:03:07Z",
-  "post_count": 58
+  "fetched": "2026-07-11T11:50:51Z",
+  "post_count": 63
 }
