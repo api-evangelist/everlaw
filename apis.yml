@@ -56,7 +56,7 @@ apis:
     url: https://api.everlaw.com/docs/
   - type: Support
     url: https://support.everlaw.com/hc/en-us/articles/360053498791-Organization-Admin-Everlaw-API
-  - type: MCP
+  - type: Documentation
     url: https://support.everlaw.com/hc/en-us/articles/49986656959771-Everlaw-MCP-Server
   - type: Status
     url: https://status.everlaw.com
