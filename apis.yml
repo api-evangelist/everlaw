@@ -6,6 +6,17 @@ description: Everlaw is a cloud-based litigation and eDiscovery platform offerin
   uploading native data. Authentication is via API keys managed by Organization Admins.
   The platform supports US, UK, EU, Canada, and Australia regional deployments. Everlaw
   also provides an MCP Server for integration with AI tools such as Claude.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: unknown
