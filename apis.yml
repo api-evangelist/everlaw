@@ -87,8 +87,6 @@ apis:
     url: https://raw.githubusercontent.com/api-evangelist/everlaw/refs/heads/main/rate-limits/everlaw-rate-limits.yml
   - type: FinOps
     url: https://raw.githubusercontent.com/api-evangelist/everlaw/refs/heads/main/finops/everlaw-finops.yml
-  - url: graphql/everlaw-graphql.md
-    type: GraphQL
   contact:
   - FN: Everlaw Support
     url: https://support.everlaw.com/hc/en-us
