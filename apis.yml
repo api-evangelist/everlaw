@@ -34,10 +34,13 @@ url: https://raw.githubusercontent.com/api-evangelist/everlaw/refs/heads/main/ap
 created: '2026-06-13'
 modified: '2026-09-13'
 specificationVersion: '0.23'
+x-docs-platform: redocly
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-10-03
 tags:
 - eDiscovery
 - Litigation
-- Legal Technology
+- Legal Tech
 - Document Review
 - Predictive Coding
 - Artificial Intelligence
