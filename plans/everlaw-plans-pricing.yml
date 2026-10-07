@@ -1,3 +1,7 @@
+# Provenance stamped 2026-10-07 (roadmap#943): written by an API Evangelist sweep (undated — the file carries no date and git cannot supply one), not
+# harvested from the provider. `method: generated` so the economics campaign may replace it with a
+# dated, verbatim transcription; every figure below is unverified until it does.
+method: generated
 name: Everlaw Plans and Pricing
 description: Everlaw uses a simple monthly per-gigabyte pricing model for its cloud-based eDiscovery platform. Pricing is not publicly listed and requires a custom quote, but the model is all-inclusive with no setup, processing, user, training, exporting, predictive coding, production, or printing fees. Volume discounts apply for larger data commitments.
 url: https://www.everlaw.com/blog/ediscovery-software/how-everlaws-pricing-is-different/
